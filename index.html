@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minigrip - Empaque Flexible Especializado</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        /* CAMBIO 1: Imagen de Fondo Principal Local */
+        .hero-bg {
+            /* Actualizado a FONDO1.png según tu lista */
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('images/FONDO1.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .industry-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .industry-list li {
+            position: relative;
+            padding-left: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: #94a3b8; /* slate-400 */
+            font-size: 0.9rem;
+        }
+
+            .industry-list li::before {
+                content: "•";
+                position: absolute;
+                left: 0;
+                color: #dc2626; /* red-600 */
+                font-weight: bold;
+            }
+
+        /* Animación de entrada para el mosaico */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Estilos para el Modal del Carrusel */
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+        }
+
+        /* Estilos para mensajes de error */
+        .error-message {
+            color: #dc2626;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        .input-error {
+            border-color: #dc2626 !important;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Top Bar (Información Corporativa) -->
+    <div class="bg-blue-900 text-white text-xs py-2 hidden md:block">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            <div class="flex space-x-6">
+                <span><i class="fas fa-phone-alt mr-2 text-red-400"></i>+52 (55) 5078 0280</span>
+                <span><i class="fas fa-map-marker-alt mr-2 text-red-400"></i>Industrial Vallejo, CDMX</span>
+            </div>
+            <div class="flex space-x-4 items-center">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-certificate text-yellow-400"></i>
+                    <span class="font-semibold">ISO 9001</span>
+                </div>
+                <span>|</span>
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-shield-alt text-green-400"></i>
+                    <span class="font-semibold">FSSC 22000</span>
+                </div>
+                <span>|</span>
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-star text-blue-400"></i>
+                    <span class="font-semibold">FDA / IMS Compliance</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header / Navegación -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-3">
+            <div class="flex justify-between items-center">
+                <!-- Logo -->
+                <div class="flex items-center cursor-pointer" onclick="showMainView()">
+                    <!-- CAMBIO 2: Logo Local -->
+                    <img src="images/logomini.png" alt="Minigrip Logo" class="h-12 md:h-16 object-contain">
+                </div>
+
+                <!-- Menú Desktop -->
+                <div class="hidden md:flex space-x-8 items-center font-medium text-gray-700">
+                    <a href="#industrias" class="hover:text-red-600 transition" data-key="nav_industries" onclick="showMainView()">Productos</a>
+                    <a href="#productos" class="hover:text-red-600 transition" data-key="nav_tech">Tecnologías</a>
+                    <a href="#nosotros" class="hover:text-red-600 transition" data-key="nav_about">Nosotros</a>
+
+                    <!-- BOTÓN INTRANET -->
+                    <a href="http://minigrip.mx/" target="_blank" class="text-gray-500 hover:text-blue-900 transition flex items-center gap-2" data-key="nav_intranet">
+                        <i class="fas fa-lock text-xs"></i> Intranet
+                    </a>
+
+                    <!-- Selector de Idioma -->
+                    <div class="flex items-center border border-gray-300 rounded-full px-3 py-1 text-sm bg-gray-50">
+                        <span id="btn-es" class="text-blue-900 font-bold cursor-pointer hover:text-blue-700" onclick="changeLanguage('es')">ES</span>
+                        <span class="mx-2 text-gray-400">|</span>
+                        <span id="btn-en" class="text-gray-500 cursor-pointer hover:text-blue-900 transition" onclick="changeLanguage('en')">EN</span>
+                    </div>
+
+                    <a href="#contacto" class="bg-red-600 text-white px-5 py-2.5 rounded-full hover:bg-red-700 transition btn-primary shadow-lg" data-key="nav_contact" onclick="showMainView()">
+                        Contacto
+                    </a>
+                </div>
+
+                <!-- Botón Menú Móvil -->
+                <div class="md:hidden flex items-center gap-4">
+                    <div class="flex text-sm font-bold text-blue-900 border border-gray-300 rounded px-2 py-1">
+                        <span onclick="changeLanguage('es')">ES</span>
+                        <span class="mx-1">|</span>
+                        <span onclick="changeLanguage('en')">EN</span>
+                    </div>
+                    <button id="mobile-menu-btn" class="text-gray-700 focus:outline-none">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Menú Móvil Desplegable -->
+            <div id="mobile-menu" class="hidden md:hidden mt-4 pb-4 border-t pt-4">
+                <a href="#industrias" class="block py-2 text-gray-700 hover:text-red-600" data-key="nav_industries" onclick="showMainView()">Productos</a>
+                <a href="#productos" class="block py-2 text-gray-700 hover:text-red-600" data-key="nav_tech">Tecnologías</a>
+                <a href="#nosotros" class="block py-2 text-gray-700 hover:text-red-600" data-key="nav_about">Nosotros</a>
+                <!-- BOTÓN INTRANET MÓVIL -->
+                <a href="http://minigrip.mx/" target="_blank" class="block py-2 text-gray-500 hover:text-blue-900 font-medium" data-key="nav_intranet">
+                    <i class="fas fa-lock mr-2"></i> Intranet
+                </a>
+                <a href="#contacto" class="block py-2 text-red-600 font-bold" data-key="nav_contact">Contacto</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN VIEW CONTAINER -->
+    <div id="main-view">
+        <!-- Hero Section -->
+        <header class="hero-bg h-[600px] flex items-center relative">
+            <div class="container mx-auto px-6 relative z-10">
+                <div class="max-w-3xl text-white">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="bg-red-600 text-white px-3 py-1 text-xs font-bold uppercase tracking-wider rounded inline-block" data-key="hero_badge">Calidad Certificada</span>
+                        <span class="text-sm font-semibold tracking-wide">ISO 9001 &bull; FSSC 22000 &bull; FDA / IMS Compliance</span>
+                    </div>
+
+                    <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-6" data-key="hero_title">
+                        Soluciones de Empaque<br /> para Tu Producto
+                    </h1>
+                    <p class="text-lg md:text-xl mb-8 text-gray-200 leading-relaxed" data-key="hero_desc">
+                        Especialistas en estructuras flexibles para Alimentos, Cuidado Personal e Higiénicos. Tecnología de barrera y alta definición en impresión.
+                    </p>
+                    <div class="flex flex-col md:flex-row gap-4">
+                        <a href="#industrias" class="bg-white text-blue-900 px-8 py-3 rounded-full font-bold hover:bg-gray-100 transition text-center shadow-lg hover:shadow-xl transform hover:-translate-y-1" data-key="hero_btn1">
+                            Nuestros Productos
+                        </a>
+                        <a href="#contacto" class="border-2 border-white text-white px-8 py-3 rounded-full font-bold hover:bg-white hover:text-blue-900 transition text-center" data-key="hero_btn2">
+                            Hablar con Ventas
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Industrias/Productos (Sección Principal) -->
+        <section id="industrias" class="bg-slate-900 text-white py-24">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <span class="text-red-500 font-bold tracking-widest text-sm uppercase" data-key="ind_subtitle">Sectores Especializados</span>
+                    <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-4" data-key="ind_title">Nuestros Productos</h2>
+                    <div class="w-24 h-1 bg-red-600 mx-auto rounded"></div>
+                    <p class="mt-4 text-slate-400" data-key="ind_click_instruction">Haz clic en una categoría para ver los productos</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+
+                    <!-- Industria: Alimentos -->
+                    <div onclick="showIndustryDetail('alimentos')" class="bg-slate-800 rounded-2xl p-8 border border-slate-700 hover:border-red-600 transition duration-300 cursor-pointer industry-card group relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-4 opacity-50 group-hover:opacity-100 transition">
+                            <i class="fas fa-arrow-right text-red-600 text-xl transform group-hover:translate-x-1 transition"></i>
+                        </div>
+                        <div class="w-16 h-16 bg-slate-700 rounded-full flex items-center justify-center mb-6 group-hover:bg-red-600 transition shadow-inner">
+                            <i class="fas fa-utensils text-2xl text-white"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4" data-key="card_food_title">Alimentos</h3>
+                        <p class="text-slate-400 mb-6 text-sm" data-key="card_food_desc">Soluciones de barrera avanzada para garantizar frescura e inocuidad alimentaria (FSSC 22000).</p>
+                        <div class="bg-slate-900/50 p-5 rounded-lg border border-slate-700">
+                            <h4 class="text-white font-semibold mb-3 text-sm uppercase tracking-wide" data-key="card_apps">Aplicaciones:</h4>
+                            <ul class="industry-list">
+                                <li data-key="prod_cereal">Liner para cereal</li>
+                                <li data-key="prod_hotfill">Hot Fill (Llenado caliente)</li>
+                                <li data-key="prod_lids">Tapas sello pelable</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Industria: Cuidado Personal -->
+                    <div onclick="showIndustryDetail('personal')" class="bg-slate-800 rounded-2xl p-8 border border-slate-700 hover:border-blue-500 transition duration-300 cursor-pointer industry-card group relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-4 opacity-50 group-hover:opacity-100 transition">
+                            <i class="fas fa-arrow-right text-blue-500 text-xl transform group-hover:translate-x-1 transition"></i>
+                        </div>
+                        <div class="w-16 h-16 bg-slate-700 rounded-full flex items-center justify-center mb-6 group-hover:bg-blue-500 transition shadow-inner">
+                            <i class="fas fa-baby text-2xl text-white"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4" data-key="card_personal_title">Cuidado Personal</h3>
+                        <p class="text-slate-400 mb-6 text-sm" data-key="card_personal_desc">Materiales suaves al tacto y respirables diseñados para el confort y la higiene del usuario final.</p>
+                        <div class="bg-slate-900/50 p-5 rounded-lg border border-slate-700">
+                            <h4 class="text-white font-semibold mb-3 text-sm uppercase tracking-wide" data-key="card_apps">Aplicaciones:</h4>
+                            <ul class="industry-list">
+                                <li data-key="prod_diaper">Pañal Respirable</li>
+                                <li data-key="prod_fem">Fem Care</li>
+                                <li data-key="prod_wipes">Toallitas húmedas</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Industria: Higiénicos -->
+                    <div onclick="showIndustryDetail('higienicos')" class="bg-slate-800 rounded-2xl p-8 border border-slate-700 hover:border-green-500 transition duration-300 cursor-pointer industry-card group relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-4 opacity-50 group-hover:opacity-100 transition">
+                            <i class="fas fa-arrow-right text-green-500 text-xl transform group-hover:translate-x-1 transition"></i>
+                        </div>
+                        <div class="w-16 h-16 bg-slate-700 rounded-full flex items-center justify-center mb-6 group-hover:bg-green-500 transition shadow-inner">
+                            <i class="fas fa-pump-soap text-2xl text-white"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4" data-key="card_hygiene_title">Higiénicos</h3>
+                        <p class="text-slate-400 mb-6 text-sm" data-key="card_hygiene_desc">Empaques de alto volumen y resistencia mecánica optimizados para líneas de producción rápidas.</p>
+                        <div class="bg-slate-900/50 p-5 rounded-lg border border-slate-700">
+                            <h4 class="text-white font-semibold mb-3 text-sm uppercase tracking-wide" data-key="card_apps">Aplicaciones:</h4>
+                            <ul class="industry-list">
+                                <li data-key="prod_napkins">Empaque servilletas</li>
+                                <li data-key="prod_tp">Papel higiénico</li>
+                                <li data-key="prod_tissue">Pañuelos desechables</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Otras Tecnologías / Productos Generales -->
+        <!-- Cambio de fondo para contraste: bg-gray-50 -> bg-slate-100 -->
+        <section id="productos" class="py-20 bg-slate-100">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-gray-900" data-key="tech_title">Tecnologías de Conversión</h2>
+                    <p class="mt-4 text-gray-600" data-key="tech_subtitle">Capacidades de manufactura de clase mundial.</p>
+                </div>
+
+                <!-- Grid actualizado para 5 elementos -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-center">
+
+                    <!-- 1. Extrusión -->
+                    <div class="bg-white p-6 rounded-lg shadow hover:shadow-md transition flex items-center gap-4">
+                        <div class="bg-orange-100 p-3 rounded-full text-orange-900"><i class="fas fa-industry"></i></div>
+                        <div>
+                            <h4 class="font-bold" data-key="tech_extrusion">Extrusión</h4>
+                            <!-- CAMBIO 3: Texto de Extrusión -->
+                            <p class="text-xs text-gray-500" data-key="tech_extrusion_desc">Tecnología multicapa de película Cast y Blown.</p>
+                        </div>
+                    </div>
+
+                    <!-- 2. Impresión -->
+                    <div class="bg-white p-6 rounded-lg shadow hover:shadow-md transition flex items-center gap-4">
+                        <div class="bg-red-100 p-3 rounded-full text-red-900"><i class="fas fa-print"></i></div>
+                        <div>
+                            <h4 class="font-bold" data-key="tech_print">Impresión</h4>
+                            <p class="text-xs text-gray-500" data-key="tech_print_desc">Flexografía HD de hasta 8 colores.</p>
+                        </div>
+                    </div>
+
+                    <!-- 3. Laminado -->
+                    <div class="bg-white p-6 rounded-lg shadow hover:shadow-md transition flex items-center gap-4">
+                        <div class="bg-blue-100 p-3 rounded-full text-blue-900"><i class="fas fa-layer-group"></i></div>
+                        <div>
+                            <h4 class="font-bold" data-key="tech_lamination">Laminado</h4>
+                            <p class="text-xs text-gray-500" data-key="tech_lamination_desc">Laminación sin solvente.</p>
+                        </div>
+                    </div>
+
+                    <!-- 4. Refinado -->
+                    <div class="bg-white p-6 rounded-lg shadow hover:shadow-md transition flex items-center gap-4 lg:col-start-1 lg:ml-auto xl:col-auto xl:ml-0">
+                        <div class="bg-purple-100 p-3 rounded-full text-purple-900"><i class="fas fa-cut"></i></div>
+                        <div>
+                            <h4 class="font-bold" data-key="tech_slitting">Refinado</h4>
+                            <p class="text-xs text-gray-500" data-key="tech_slitting_desc">Corte y rebobinado de precisión.</p>
+                        </div>
+                    </div>
+
+                    <!-- 5. Bolseo -->
+                    <div class="bg-white p-6 rounded-lg shadow hover:shadow-md transition flex items-center gap-4 lg:col-end-4 lg:mr-auto xl:col-auto xl:mr-0">
+                        <div class="bg-green-100 p-3 rounded-full text-green-900"><i class="fas fa-shopping-bag"></i></div>
+                        <div>
+                            <h4 class="font-bold" data-key="tech_pouch">Bolseo</h4>
+                            <p class="text-xs text-gray-500" data-key="tech_pouch_desc">Confección de diversos formatos de bolsa.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección Nosotros (About Us) -->
+        <section id="nosotros" class="py-20 bg-white border-t border-gray-100">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <span class="text-blue-600 font-bold tracking-widest text-sm uppercase" data-key="about_badge">Nuestra Historia</span>
+                    <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-4 text-gray-900" data-key="about_title">Sobre Nosotros</h2>
+                    <div class="w-24 h-1 bg-red-600 mx-auto rounded"></div>
+                    <!-- CAMBIO 1: Año de Fundación -->
+                    <p class="mt-6 text-xl text-gray-600 font-semibold" data-key="about_founded">Minigrip fue fundada en 1966</p>
+                </div>
+
+                <!-- CAMBIO: Grid de 3 columnas para Misión, Visión y Valores -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 items-stretch">
+
+                    <!-- Columna 1: Misión -->
+                    <div class="bg-gray-50 p-8 rounded-2xl border-t-4 border-blue-900 shadow-sm hover:shadow-md transition flex flex-col h-full">
+                        <div class="flex items-center mb-6">
+                            <div class="bg-blue-100 p-3 rounded-full text-blue-900 mr-4 shrink-0">
+                                <i class="fas fa-bullseye text-2xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-900" data-key="mission_title">Misión</h3>
+                        </div>
+                        <p class="text-gray-600 leading-relaxed flex-grow" data-key="mission_text">Mejorar la calidad de vida de nuestra comunidad con películas innovadoras, sustentables y de producción responsable.</p>
+                    </div>
+
+                    <!-- Columna 2: Visión -->
+                    <div class="bg-gray-50 p-8 rounded-2xl border-t-4 border-red-600 shadow-sm hover:shadow-md transition flex flex-col h-full">
+                        <div class="flex items-center mb-6">
+                            <div class="bg-red-100 p-3 rounded-full text-red-900 mr-4 shrink-0">
+                                <i class="fas fa-eye text-2xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-900" data-key="vision_title">Visión</h3>
+                        </div>
+                        <p class="text-gray-600 leading-relaxed flex-grow" data-key="vision_text">Ser el referente en tecnología para protección de alimentos y cuidado personal en el Continente Americano.</p>
+                    </div>
+
+                    <!-- Columna 3: Valores -->
+                    <div class="bg-gray-50 p-8 rounded-2xl border-t-4 border-green-600 shadow-sm hover:shadow-md transition flex flex-col h-full">
+                        <div class="flex items-center mb-6">
+                            <div class="bg-green-100 p-3 rounded-full text-green-700 mr-4 shrink-0">
+                                <i class="fas fa-hand-holding-heart text-2xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-900" data-key="values_title">Valores</h3>
+                        </div>
+
+                        <!-- Lista de valores optimizada para columna -->
+                        <ul class="space-y-3 flex-grow">
+                            <li class="flex items-center text-gray-700">
+                                <i class="fas fa-check text-green-500 mr-3 text-xs"></i>
+                                <span data-key="val_safety">Seguridad</span>
+                            </li>
+                            <li class="flex items-center text-gray-700">
+                                <i class="fas fa-check text-green-500 mr-3 text-xs"></i>
+                                <span data-key="val_service">Servicio al cliente</span>
+                            </li>
+                            <li class="flex items-center text-gray-700">
+                                <i class="fas fa-check text-green-500 mr-3 text-xs"></i>
+                                <span data-key="val_teamwork">Trabajo en equipo</span>
+                            </li>
+                            <li class="flex items-center text-gray-700">
+                                <i class="fas fa-check text-green-500 mr-3 text-xs"></i>
+                                <span data-key="val_integrity">Integridad</span>
+                            </li>
+                            <li class="flex items-center text-gray-700">
+                                <i class="fas fa-check text-green-500 mr-3 text-xs"></i>
+                                <span data-key="val_social">Compromiso social</span>
+                            </li>
+                            <li class="flex items-center text-gray-700">
+                                <i class="fas fa-check text-green-500 mr-3 text-xs"></i>
+                                <span data-key="val_leadership">Liderazgo</span>
+                            </li>
+                            <li class="flex items-center text-gray-700">
+                                <i class="fas fa-check text-green-500 mr-3 text-xs"></i>
+                                <span data-key="val_excellence">Excelencia</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action / Contacto -->
+        <section id="contacto" class="py-20 bg-blue-100">
+            <div class="container mx-auto px-6">
+                <div class="bg-blue-900 rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
+                    <!-- Info Contacto -->
+                    <div class="md:w-5/12 p-10 text-white flex flex-col justify-between bg-blue-800">
+                        <div>
+                            <h3 class="text-3xl font-bold mb-6" data-key="contact_title">Contáctanos</h3>
+                            <p class="text-blue-200 mb-8" data-key="contact_subtitle">Nuestro equipo técnico está listo para asesorarte en la mejor estructura para tu producto.</p>
+
+                            <div class="space-y-6">
+                                <div class="flex items-start">
+                                    <i class="fas fa-map-marker-alt w-8 text-red-500 mt-1"></i>
+                                    <div>
+                                        <span class="block font-bold" data-key="contact_office">Planta y Oficinas</span>
+                                        <!-- CAMBIO 2: LINK DE GOOGLE MAPS -->
+                                        <a href="https://maps.app.goo.gl/qkwopzaHMA7XP69w9" target="_blank" class="text-sm text-blue-100 hover:text-white hover:underline transition block mt-1">
+                                            Poniente 128 #543,<br>Industrial Vallejo, Azcapotzalco,<br>CDMX, México.
+                                            <span class="text-xs text-yellow-400 block mt-1"><i class="fas fa-external-link-alt mr-1"></i> Ver en Google Maps</span>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-phone w-8 text-red-500"></i>
+                                    <span class="text-xl font-bold">+52 (55) 5078 0280</span>
+                                </div>
+                                <!-- Nuevo Campo de WhatsApp -->
+                                <div class="flex items-center">
+                                    <i class="fab fa-whatsapp w-8 text-red-500 text-xl"></i>
+                                    <a href="https://wa.me/525530352249" target="_blank" class="text-xl font-bold hover:text-green-400 transition">+52 (55) 3035 2249</a>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-envelope w-8 text-red-500"></i>
+                                    <span>ventas@minigrip.com.mx</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-12 pt-8 border-t border-blue-700">
+                            <p class="text-xs text-blue-300 uppercase tracking-widest mb-2" data-key="footer_certs">Certificaciones</p>
+                            <div class="flex gap-2 flex-wrap">
+                                <span class="bg-white/10 px-3 py-1 rounded text-sm">ISO 9001</span>
+                                <span class="bg-white/10 px-3 py-1 rounded text-sm">FSSC 22000</span>
+                                <span class="bg-white/10 px-3 py-1 rounded text-sm">FDA / IMS Compliance</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Formulario -->
+                    <div class="md:w-7/12 p-10 bg-white">
+                        <!-- ATENCIÓN: Formulario conectado a Formspree del usuario. -->
+                        <form id="contactForm" onsubmit="validateAndSubmit(event)" action="https://formspree.io/f/movgkbov" method="POST">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                <div>
+                                    <label class="block text-gray-700 font-bold mb-2 text-sm" for="nombre" data-key="form_name">Nombre</label>
+                                    <input class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition bg-gray-50" type="text" id="nombre" name="nombre" placeholder="" required>
+                                    <p class="error-message" id="error-nombre">Este campo es obligatorio.</p>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-bold mb-2 text-sm" for="empresa" data-key="form_company">Empresa</label>
+                                    <input class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition bg-gray-50" type="text" id="empresa" name="empresa" placeholder="" required>
+                                    <p class="error-message" id="error-empresa">Este campo es obligatorio.</p>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                <div>
+                                    <label class="block text-gray-700 font-bold mb-2 text-sm" for="email" data-key="form_email">Correo Electrónico</label>
+                                    <input class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition bg-gray-50" type="email" id="email" name="email" placeholder="" required>
+                                    <p class="error-message" id="error-email">Ingrese un correo válido.</p>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-bold mb-2 text-sm" for="telefono" data-key="form_phone">Teléfono</label>
+                                    <input class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition bg-gray-50" type="tel" id="telefono" name="telefono" placeholder="" required>
+                                    <p class="error-message" id="error-telefono">Este campo es obligatorio.</p>
+                                </div>
+                            </div>
+
+                            <div class="mb-6">
+                                <label class="block text-gray-700 font-bold mb-2 text-sm" for="interes" data-key="form_interest">Producto de Interés:</label>
+                                <select class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition bg-gray-50" id="interes" name="interes">
+                                    <option data-key="opt_food">Alimentos</option>
+                                    <option data-key="opt_personal">Cuidado Personal</option>
+                                    <option data-key="opt_hygiene">Higiénicos</option>
+                                    <option data-key="opt_other">Otro</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-6">
+                                <label class="block text-gray-700 font-bold mb-2 text-sm" for="mensaje" data-key="form_details">Detalles del Proyecto</label>
+                                <textarea class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition bg-gray-50 h-32" id="mensaje" name="mensaje" placeholder="" required></textarea>
+                                <p class="error-message" id="error-mensaje">Este campo es obligatorio.</p>
+                            </div>
+
+                            <!-- Boton con Loading State -->
+                            <button type="submit" id="submit-btn" class="w-full bg-red-600 text-white font-bold py-3 rounded-lg hover:bg-red-700 transition shadow-lg flex justify-center items-center gap-2">
+                                <span id="btn-text" data-key="form_send">Enviar Solicitud</span>
+                                <i id="btn-icon" class="fas fa-paper-plane text-sm"></i>
+                                <svg id="btn-spinner" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- INDUSTRY DETAIL VIEW CONTAINER -->
+    <div id="industry-detail-view" class="hidden min-h-screen bg-gray-50 fade-in">
+        <div class="bg-blue-900 text-white py-12">
+            <div class="container mx-auto px-6">
+                <button onclick="showMainView()" class="mb-6 flex items-center text-blue-200 hover:text-white transition">
+                    <i class="fas fa-arrow-left mr-2"></i> <span data-key="btn_back">Regresar al Inicio</span>
+                </button>
+                <h2 id="detail-title" class="text-4xl font-bold">Industria</h2>
+                <div class="w-20 h-1 bg-red-600 mt-4"></div>
+            </div>
+        </div>
+
+        <div class="container mx-auto px-6 py-12">
+            <!-- Grid de Mosaico -->
+            <div id="mosaic-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- Javascript inyectará las tarjetas aquí -->
+            </div>
+        </div>
+
+        <!-- CTA Rápido en la vista detalle -->
+        <div class="bg-gray-200 py-12 text-center">
+            <div class="container mx-auto px-6">
+                <h3 class="text-2xl font-bold text-gray-800 mb-4" data-key="detail_cta_title">¿Necesitas esta solución?</h3>
+                <a href="#contacto" onclick="showMainView()" class="bg-red-600 text-white px-8 py-3 rounded-full font-bold hover:bg-red-700 transition inline-block" data-key="detail_cta_btn">Cotizar Ahora</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRODUCT DETAIL CAROUSEL (MODAL) -->
+    <div id="product-modal" class="hidden fixed inset-0 z-[60] flex items-center justify-center modal-overlay p-4">
+        <div class="relative w-full max-w-4xl bg-white rounded-lg shadow-2xl overflow-hidden flex flex-col md:flex-row h-[80vh] md:h-[600px]">
+            <!-- Botón Cerrar (Mobile friendly) -->
+            <button onclick="closeProductModal()" class="absolute top-4 right-4 z-20 bg-gray-900/50 hover:bg-red-600 text-white p-2 rounded-full transition">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+
+            <!-- Sección de Imagen (Carrusel) -->
+            <div class="w-full md:w-2/3 bg-black relative flex items-center justify-center h-1/2 md:h-full">
+                <img id="modal-image" src="" alt="Product Image" class="max-w-full max-h-full object-contain transition duration-500">
+
+                <!-- Controles del carrusel -->
+                <button onclick="changeSlide(-1)" class="absolute left-4 bg-black/50 hover:bg-black/80 text-white p-3 rounded-full transition">
+                    <i class="fas fa-chevron-left text-2xl"></i>
+                </button>
+                <button onclick="changeSlide(1)" class="absolute right-4 bg-black/50 hover:bg-black/80 text-white p-3 rounded-full transition">
+                    <i class="fas fa-chevron-right text-2xl"></i>
+                </button>
+
+                <!-- Indicadores de puntos -->
+                <div class="absolute bottom-4 flex space-x-2" id="carousel-indicators">
+                    <!-- JS inyectará los puntos -->
+                </div>
+            </div>
+
+            <!-- Sección de Info -->
+            <div class="w-full md:w-1/3 p-8 flex flex-col justify-center bg-white h-1/2 md:h-full overflow-y-auto">
+                <h3 id="modal-title" class="text-2xl md:text-3xl font-bold text-gray-900 mb-4">Product Name</h3>
+                <div class="w-12 h-1 bg-red-600 mb-6"></div>
+                <p class="text-gray-600 mb-8">
+                    Solución de alta calidad diseñada para cumplir con los estándares de la industria y las necesidades del consumidor.
+                </p>
+                <a href="#contacto" onclick="closeProductModal(); showMainView();" class="bg-blue-900 text-center text-white font-bold py-3 rounded hover:bg-blue-800 transition">
+                    Solicitar Cotización
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- SUCCESS MODAL (NUEVO) -->
+    <div id="success-modal" class="hidden fixed inset-0 z-[70] flex items-center justify-center modal-overlay p-4">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full text-center relative animate-[bounceIn_0.5s_ease-out]">
+            <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-check text-4xl text-green-500"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">¡Mensaje Enviado!</h3>
+            <p class="text-gray-600 mb-6">Gracias por contactarnos. Nuestro equipo responderá a tu solicitud a la brevedad.</p>
+            <button onclick="closeSuccessModal()" class="w-full bg-green-500 text-white font-bold py-3 rounded-lg hover:bg-green-600 transition shadow">
+                Aceptar
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 py-12 border-t border-gray-800">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <img src="images/logomini.png" alt="Minigrip Logo Footer" class="h-10 object-contain">
+                    </div>
+                    <p class="text-sm leading-relaxed mb-4" data-key="footer_about">
+                        Líderes en fabricación de empaque flexible.
+                    </p>
+                    <div class="text-sm">
+                        <p class="mb-1"><i class="fas fa-map-marker-alt mr-2"></i>Poniente 128 #543, Ind. Vallejo, CDMX</p>
+                        <p><i class="fas fa-phone mr-2"></i>+52 (55) 5078 0280</p>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-white text-lg font-bold mb-4" data-key="footer_industries">Productos</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" onclick="showIndustryDetail('alimentos')" class="hover:text-white transition" data-key="card_food_title">Alimentos</a></li>
+                        <li><a href="#" onclick="showIndustryDetail('personal')" class="hover:text-white transition" data-key="card_personal_title">Cuidado Personal</a></li>
+                        <li><a href="#" onclick="showIndustryDetail('higienicos')" class="hover:text-white transition" data-key="card_hygiene_title">Higiénicos</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white text-lg font-bold mb-4" data-key="footer_certs">Certificaciones</h4>
+                    <div class="flex flex-col space-y-2 text-sm">
+                        <span class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> ISO 9001</span>
+                        <span class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> FSSC 22000</span>
+                        <span class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> FDA / IMS Compliance</span>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-8 text-center text-xs">
+                <p>&copy; 2023 Minigrip de México. <span data-key="footer_rights">Todos los derechos reservados.</span></p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+
+        /* --- VALIDACION FORMULARIO Y AJAX --- */
+        function validateAndSubmit(event) {
+            // Prevenimos el envío estándar para manejarlo con AJAX
+            event.preventDefault();
+
+            const form = document.getElementById('contactForm');
+            let isValid = true;
+
+            // --- VALIDACIONES EXISTENTES ---
+            const nombre = document.getElementById('nombre');
+            if (!nombre.value.trim()) { showError('nombre', true); isValid = false; } else { showError('nombre', false); }
+
+            const empresa = document.getElementById('empresa');
+            if (!empresa.value.trim()) { showError('empresa', true); isValid = false; } else { showError('empresa', false); }
+
+            const email = document.getElementById('email');
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email.value)) { showError('email', true); isValid = false; } else { showError('email', false); }
+
+            const telefono = document.getElementById('telefono');
+            if (!telefono.value.trim()) { showError('telefono', true); isValid = false; } else { showError('telefono', false); }
+
+            const mensaje = document.getElementById('mensaje');
+            if (!mensaje.value.trim()) { showError('mensaje', true); isValid = false; } else { showError('mensaje', false); }
+
+            if (!isValid) return false;
+
+            // --- LÓGICA DE ENVÍO AJAX ---
+            const submitBtn = document.getElementById('submit-btn');
+            const btnText = document.getElementById('btn-text');
+            const btnIcon = document.getElementById('btn-icon');
+            const btnSpinner = document.getElementById('btn-spinner');
+
+            // Estado de carga
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-75', 'cursor-not-allowed');
+            btnText.innerText = "Enviando...";
+            btnIcon.classList.add('hidden');
+            btnSpinner.classList.remove('hidden');
+
+            const data = new FormData(form);
+
+            fetch(form.action, {
+                method: form.method,
+                body: data,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    // ÉXITO: Limpiar form y mostrar modal
+                    form.reset();
+                    document.getElementById('success-modal').classList.remove('hidden');
+                } else {
+                    response.json().then(data => {
+                        if (Object.hasOwn(data, 'errors')) {
+                            alert(data["errors"].map(error => error["message"]).join(", "));
+                        } else {
+                            alert("Hubo un error al enviar el formulario. Por favor intenta de nuevo.");
+                        }
+                    })
+                }
+            }).catch(error => {
+                alert("Hubo un error de conexión al enviar el formulario.");
+            }).finally(() => {
+                // Restaurar botón
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-75', 'cursor-not-allowed');
+                btnText.innerText = document.documentElement.lang === 'en' ? "Send Request" : "Enviar Solicitud"; // Simple check, ideally use translation logic
+                // For simplicity, using the current logic's language state might be better, but strictly reseting text works
+                checkButtonLang();
+                btnIcon.classList.remove('hidden');
+                btnSpinner.classList.add('hidden');
+            });
+
+            return false;
+        }
+
+        function checkButtonLang() {
+            // Helper to restore button text based on currentLang
+            const btnText = document.getElementById('btn-text');
+            btnText.innerText = translations[currentLang]['form_send'];
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('success-modal').classList.add('hidden');
+        }
+
+        function showError(fieldId, show) {
+            const input = document.getElementById(fieldId);
+            const errorMsg = document.getElementById('error-' + fieldId);
+
+            if (show) {
+                input.classList.add('input-error');
+                errorMsg.style.display = 'block';
+            } else {
+                input.classList.remove('input-error');
+                errorMsg.style.display = 'none';
+            }
+        }
+
+        /* --- LOGICA DE NAVEGACION (SPA) --- */
+        function showMainView() {
+            document.getElementById('main-view').classList.remove('hidden');
+            document.getElementById('industry-detail-view').classList.add('hidden');
+            document.getElementById('product-modal').classList.add('hidden'); // Ensure modal is closed
+            window.scrollTo(0, 0);
+        }
+
+        /* --- DATA STRUCTURE UPDATED WITH LOCAL PATHS --- */
+        const industryData = {
+            'alimentos': {
+                title: { es: 'Alimentos', en: 'Food' },
+                products: [
+                    {
+                        name: { es: 'Liner para Cereal', en: 'Cereal Liner' },
+                        images: [
+                            'images/LINER1.png',
+                            'images/LINER2.png'
+                        ]
+                    },
+                    {
+                        name: { es: 'Termoformado', en: 'Thermoforming' },
+                        images: [
+                            'images/TERMO1.png',
+                            'images/TERMO2.png'
+                        ]
+                    },
+                    {
+                        name: { es: 'Hot Fill', en: 'Hot Fill' },
+                        images: [
+                            'images/HFL1.png',
+                            'images/HFL2.png'
+                        ]
+                    },
+                    {
+                        name: { es: 'Tapa Impresa', en: 'Printed Lids' },
+                        // Uso genérico ya que no había imagen específica de Tapa en tu lista
+                        images: [
+                            'images/FONDO2.png'
+                        ]
+                    },
+                    {
+                        name: { es: 'Sello Pelable', en: 'Peelable Seal' },
+                        // Uso genérico ya que no había imagen específica de Sello en tu lista
+                        images: [
+                            'images/FONDO3.png'
+                        ]
+                    }
+                ]
+            },
+            'personal': {
+                title: { es: 'Cuidado Personal', en: 'Personal Care' },
+                products: [
+                    {
+                        name: { es: 'Pañal Respirable', en: 'Breathable Diaper Backsheet' },
+                        images: [
+                            'images/PAB1.png',
+                            'images/PAB2.png',
+                            'images/PAB3.png',
+                            'images/PAB4.png'
+                        ]
+                    },
+                    {
+                        name: { es: 'Empaque Pañales', en: 'Diaper Packaging' },
+                        images: [
+                            'images/DIAPER1.png',
+                            'images/DIAPER2.png'
+                        ]
+                    },
+                    {
+                        name: { es: 'Fem Care', en: 'Fem Care' },
+                        images: [
+                            'images/FemCare2.png'
+                        ]
+                    },
+                    {
+                        name: { es: 'Toallitas Húmedas', en: 'Wet Wipes' },
+                        images: [
+                            'images/FLOW_PACK1.png'
+                        ]
+                    }
+                ]
+            },
+            'higienicos': {
+                title: { es: 'Higiénicos', en: 'Hygienic' },
+                products: [
+                    {
+                        name: { es: 'Empaque Servilletas', en: 'Napkin Packaging' },
+                        images: [
+                            'images/FLOW_PACK2.png'
+                        ]
+                    },
+                    {
+                        name: { es: 'Papel de Baño (Multi)', en: 'Toilet Paper Multipack' },
+                        images: [
+                            'images/PABSP1.png',
+                            'images/PABSP2.png'
+                        ]
+                    },
+                    {
+                        name: { es: 'Pañuelos Desechables', en: 'Disposable Tissue' },
+                        // Reutilizando imagen genérica de flow pack
+                        images: [
+                            'images/FLOW_PACK1.png'
+                        ]
+                    }
+                ]
+            }
+        };
+
+        let currentLang = 'es';
+        let currentCategory = ''; // Store current category for detail view
+
+        function showIndustryDetail(key) {
+            currentCategory = key;
+            const data = industryData[key];
+            if (!data) return;
+
+            // Update Title
+            document.getElementById('detail-title').innerText = data.title[currentLang];
+
+            // Build Mosaic
+            const grid = document.getElementById('mosaic-grid');
+            grid.innerHTML = ''; // Clear
+
+            data.products.forEach((prod, index) => {
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-lg shadow-md overflow-hidden group hover:shadow-xl transition cursor-pointer";
+                card.onclick = () => openProductModal(key, index); // New click handler
+                card.innerHTML = `
+                            <div class="h-48 overflow-hidden relative">
+                                <img src="${prod.images[0]}" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-500" alt="${prod.name[currentLang]}">
+                                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition flex items-center justify-center">
+                                    <i class="fas fa-search-plus text-white text-3xl opacity-0 group-hover:opacity-100 transition"></i>
+                                </div>
+                            </div>
+                            <div class="p-4 text-center">
+                                <h4 class="font-bold text-gray-800">${prod.name[currentLang]}</h4>
+                                <span class="text-xs text-blue-500 mt-2 block hover:underline">Ver detalles</span>
+                            </div>
+                        `;
+                grid.appendChild(card);
+            });
+
+            // Switch View
+            document.getElementById('main-view').classList.add('hidden');
+            document.getElementById('industry-detail-view').classList.remove('hidden');
+            window.scrollTo(0, 0);
+        }
+
+        /* --- CAROUSEL LOGIC --- */
+        let currentProductImages = [];
+        let currentImageIndex = 0;
+
+        function openProductModal(categoryKey, productIndex) {
+            const product = industryData[categoryKey].products[productIndex];
+            currentProductImages = product.images;
+            currentImageIndex = 0;
+
+            // Set Title
+            document.getElementById('modal-title').innerText = product.name[currentLang];
+
+            // Show Modal
+            document.getElementById('product-modal').classList.remove('hidden');
+
+            // Update Carousel View
+            updateCarousel();
+        }
+
+        function closeProductModal() {
+            document.getElementById('product-modal').classList.add('hidden');
+        }
+
+        function changeSlide(direction) {
+            currentImageIndex += direction;
+            if (currentImageIndex >= currentProductImages.length) {
+                currentImageIndex = 0;
+            } else if (currentImageIndex < 0) {
+                currentImageIndex = currentProductImages.length - 1;
+            }
+            updateCarousel();
+        }
+
+        function updateCarousel() {
+            const imgElement = document.getElementById('modal-image');
+            imgElement.style.opacity = '0'; // Fade out
+
+            setTimeout(() => {
+                imgElement.src = currentProductImages[currentImageIndex];
+                imgElement.style.opacity = '1'; // Fade in
+            }, 200);
+
+            // Update dots
+            const indicators = document.getElementById('carousel-indicators');
+            indicators.innerHTML = '';
+            currentProductImages.forEach((_, idx) => {
+                const dot = document.createElement('div');
+                dot.className = `w-3 h-3 rounded-full transition ${idx === currentImageIndex ? 'bg-white' : 'bg-white/40'}`;
+                indicators.appendChild(dot);
+            });
+        }
+
+        /* --- TRADUCCIONES --- */
+        const translations = {
+            es: {
+                nav_industries: "Productos",
+                nav_tech: "Tecnologías",
+                nav_about: "Nosotros",
+                nav_intranet: "Intranet", // Agregado
+                nav_contact: "Contacto",
+                hero_badge: "Calidad Certificada",
+                hero_title: "Soluciones de Empaque<br/> para Tu Producto",
+                hero_desc: "Especialistas en estructuras flexibles para Alimentos, Cuidado Personal e Higiénicos. Tecnología de barrera y alta definición en impresión.",
+                hero_btn1: "Nuestros Productos",
+                hero_btn2: "Hablar con Ventas",
+                ind_subtitle: "Sectores Especializados",
+                ind_title: "Nuestros Productos",
+                ind_click_instruction: "Haz clic en una categoría para ver los productos",
+                card_food_title: "Alimentos",
+                card_food_desc: "Soluciones de barrera avanzada para garantizar frescura e inocuidad alimentaria (FSSC 22000).",
+                card_personal_title: "Cuidado Personal",
+                card_personal_desc: "Materiales suaves al tacto y respirables diseñados para el confort y la higiene del usuario final.",
+                card_hygiene_title: "Higiénicos",
+                card_hygiene_desc: "Empaques de alto volumen y resistencia mecánica optimizados para líneas de producción rápidas.",
+                card_apps: "Aplicaciones:",
+                prod_cereal: "Liner para cereal",
+                prod_hotfill: "Hot Fill (Llenado caliente)",
+                prod_lids: "Tapas sello pelable",
+                prod_diaper: "Pañal Respirable",
+                prod_fem: "Fem Care",
+                prod_wipes: "Toallitas húmedas",
+                prod_napkins: "Empaque servilletas",
+                prod_tp: "Papel higiénico",
+                prod_tissue: "Pañuelos desechables",
+                tech_title: "Tecnologías de Conversión",
+                tech_subtitle: "Procesos integrados de manufactura.",
+
+                // Actualización Tecnologías ES
+                tech_extrusion: "Extrusión",
+                tech_extrusion_desc: "Tecnología multicapa de película Cast y Blown.", // CAMBIO 3
+                tech_print: "Impresión",
+                tech_print_desc: "Flexografía HD de hasta 8 colores.",
+                tech_lamination: "Laminado",
+                tech_lamination_desc: "Laminación sin solvente.",
+                tech_slitting: "Refinado",
+                tech_slitting_desc: "Corte y rebobinado de precisión.",
+                tech_pouch: "Bolseo",
+                tech_pouch_desc: "Confección de diversos formatos de bolsa.",
+
+                // Nosotros
+                about_badge: "Nuestra Historia",
+                about_title: "Sobre Nosotros",
+                about_founded: "Minigrip fue fundada en 1966", // CAMBIO 1
+                mission_title: "Misión",
+                mission_text: "Mejorar la calidad de vida de nuestra comunidad con películas innovadoras, sustentables y de producción responsable.",
+                vision_title: "Visión",
+                vision_text: "Ser el referente en tecnología para protección de alimentos y cuidado personal en el Continente Americano.",
+                values_title: "Nuestros Valores",
+                val_safety: "Seguridad",
+                val_service: "Servicio al cliente",
+                val_teamwork: "Trabajo en equipo",
+                val_integrity: "Integridad",
+                val_social: "Compromiso social",
+                val_leadership: "Liderazgo",
+                val_excellence: "Excelencia",
+
+                contact_title: "Contáctanos",
+                contact_subtitle: "Nuestro equipo técnico está listo para asesorarte en la mejor estructura para tu producto.",
+                contact_office: "Plant & Offices",
+                footer_certs: "Certificaciones",
+                form_name: "Nombre",
+                form_company: "Empresa",
+                form_email: "Correo Electrónico",
+                form_phone: "Teléfono",
+                form_interest: "Producto de Interés:",
+
+                // Traducción Opciones Formulario ES
+                opt_food: "Alimentos",
+                opt_personal: "Cuidado Personal",
+                opt_hygiene: "Higiénicos",
+                opt_other: "Otro",
+
+                form_details: "Detalles del Proyecto",
+                form_send: "Enviar Solicitud",
+                footer_about: "Líderes en fabricación de empaque flexible.",
+                footer_industries: "Productos",
+                footer_rights: "Todos los derechos reservados.",
+                btn_back: "Regresar al Inicio",
+                detail_cta_title: "¿Necesitas esta solución?",
+                detail_cta_btn: "Cotizar Ahora"
+            },
+            en: {
+                nav_industries: "Products",
+                nav_tech: "Technology",
+                nav_about: "About Us",
+                nav_intranet: "Intranet", // Agregado
+                nav_contact: "Contact",
+                hero_badge: "Certified Quality",
+                hero_title: "Packaging Solutions<br/> for Your Product",
+                hero_desc: "Specialists in flexible structures for Food, Personal Care, and Hygienic sectors. Barrier technology and High Definition printing.",
+                hero_btn1: "Our Products",
+                hero_btn2: "Talk to Sales",
+                ind_subtitle: "Specialized Sectors",
+                ind_title: "Our Products",
+                ind_click_instruction: "Click on a category to see products",
+                card_food_title: "Food",
+                card_food_desc: "Advanced barrier solutions to ensure freshness and food safety (FSSC 22000).",
+                card_personal_title: "Personal Care",
+                card_personal_desc: "Soft-touch and breathable materials designed for end-user comfort and hygiene.",
+                card_hygiene_title: "Hygienic",
+                card_hygiene_desc: "High-volume, high-mechanical resistance packaging optimized for fast production lines.",
+                card_apps: "Applications:",
+                prod_cereal: "Cereal Liner",
+                prod_hotfill: "Hot Fill",
+                prod_lids: "Peelable Lid Seals",
+                prod_diaper: "Breathable Diaper",
+                prod_fem: "Fem Care",
+                prod_wipes: "Wet Wipes",
+                prod_napkins: "Napkin Packaging",
+                prod_tp: "Toilet Paper",
+                prod_tissue: "Disposable Tissue",
+                tech_title: "Conversion Technologies",
+                tech_subtitle: "Integrated manufacturing processes.",
+
+                // Actualización Tecnologías EN
+                tech_extrusion: "Extrusion",
+                tech_extrusion_desc: "Cast and Blown multilayer film technology.",
+                tech_print: "Printing",
+                tech_print_desc: "HD Flexography up to 8 colors.",
+                tech_lamination: "Lamination",
+                tech_lamination_desc: "Solvent-less lamination.",
+                tech_slitting: "Slitting",
+                tech_slitting_desc: "Precision slitting and rewinding.",
+                tech_pouch: "Pouch Making",
+                tech_pouch_desc: "Manufacturing of diverse bag formats.",
+
+                // About Us EN
+                about_badge: "Our History",
+                about_title: "About Us",
+                about_founded: "Minigrip was founded in 1966",
+                mission_title: "Mission",
+                mission_text: "To improve the quality of life of our community with innovative, sustainable, and responsibly produced films.",
+                vision_title: "Vision",
+                vision_text: "To be the benchmark in technology for food protection and personal care in the American Continent.",
+                values_title: "Our Values",
+                val_safety: "Safety",
+                val_service: "Customer Service",
+                val_teamwork: "Teamwork",
+                val_integrity: "Integrity",
+                val_social: "Social Commitment",
+                val_leadership: "Leadership",
+                val_excellence: "Excellence",
+
+                contact_title: "Contact Us",
+                contact_subtitle: "Our technical team is ready to advise you on the best structure for your product.",
+                contact_office: "Plant & Offices",
+                footer_certs: "Certificaciones",
+                form_name: "Name",
+                form_company: "Company",
+                form_email: "Email",
+                form_phone: "Phone",
+                form_interest: "Product of Interest:",
+
+                // Traducción Opciones Formulario EN
+                opt_food: "Food",
+                opt_personal: "Personal Care",
+                opt_hygiene: "Hygienic",
+                opt_other: "Other",
+
+                form_details: "Project Details",
+                form_send: "Send Request",
+                footer_about: "Leaders in flexible packaging manufacturing.",
+                footer_industries: "Products",
+                footer_rights: "All rights reserved.",
+                btn_back: "Back to Home",
+                detail_cta_title: "Need this solution?",
+                detail_cta_btn: "Get a Quote"
+            }
+        };
+
+        function changeLanguage(lang) {
+            currentLang = lang;
+
+            // Visual feedback on buttons
+            document.getElementById('btn-es').className = lang === 'es' ? "text-blue-900 font-bold cursor-pointer" : "text-gray-500 cursor-pointer hover:text-blue-900 transition";
+            document.getElementById('btn-en').className = lang === 'en' ? "text-blue-900 font-bold cursor-pointer" : "text-gray-500 cursor-pointer hover:text-blue-900 transition";
+
+            // Update all elements with data-key
+            const elements = document.querySelectorAll('[data-key]');
+            elements.forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (translations[lang][key]) {
+                    el.innerHTML = translations[lang][key];
+                }
+            });
+
+            // If we are currently in the detail view, refresh it to update language
+            if (!document.getElementById('industry-detail-view').classList.contains('hidden')) {
+                if (currentCategory) showIndustryDetail(currentCategory);
+            }
+
+            // If modal is open, refresh title
+            if (!document.getElementById('product-modal').classList.contains('hidden')) {
+                // Find visible product title, simple logic to refresh
+                // (Advanced: store currentProductObj and refresh from there)
+            }
+        }
+    </script>
+</body>
+</html>
