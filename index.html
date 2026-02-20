@@ -15,13 +15,23 @@
             scroll-behavior: smooth;
         }
 
-        /* CAMBIO 1: Imagen de Fondo Principal Local */
-        .hero-bg {
-            /* Actualizado a EmpaqueSalchichas.png según tu lista */
-            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('images/EmpaqueSalchichas.png');
-            background-size: cover;
-            background-position: center;
-        }
+/* HERO BACKGROUND AJUSTADO */
+.hero-bg {
+    background-image: 
+        linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)),
+        url('images/EmpaqueSalchichas.png');
+
+    background-size: 80%; /* ← Tamaño para móvil */
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: #0f172a;
+}
+
+@media (min-width: 768px) {
+    .hero-bg {
+        background-size: 55%; /* ← Tablet y desktop */
+    }
+}        
 
         .industry-card:hover {
             transform: translateY(-5px);
@@ -1168,3 +1178,4 @@
 </body>
 
 </html>
+
